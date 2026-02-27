@@ -1,0 +1,20 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+Thumbe.db
+ehthumbs.db
+Desktop.ini
+
+# Arduino / ESP32
+build/
+libraries/
+
+# Data
+mq2_data.csv
+*.log
