@@ -1,0 +1,691 @@
+|--- mq7_ratio_mean <= 12.50
+|   |--- mq2_ratio_mean <= 7.09
+|   |   |--- mq2_mq135_inter <= 18.82
+|   |   |   |--- mq7_ratio_mean <= 10.86
+|   |   |   |   |--- mq7_ratio_std <= 0.67
+|   |   |   |   |   |--- class: 1
+|   |   |   |   |--- mq7_ratio_std >  0.67
+|   |   |   |   |   |--- mq2_ratio_std <= 0.58
+|   |   |   |   |   |   |--- mq2_mq135_inter <= 17.95
+|   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |--- mq2_mq135_inter >  17.95
+|   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- mq2_ratio_std >  0.58
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |--- mq7_ratio_mean >  10.86
+|   |   |   |   |--- mq7_ratio_mean <= 11.01
+|   |   |   |   |   |--- mq2_ratio_mean <= 6.42
+|   |   |   |   |   |   |--- log_mq7_ratio <= 1.04
+|   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.46
+|   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |--- log_mq135_ratio >  0.46
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- log_mq7_ratio >  1.04
+|   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.09
+|   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |--- mq2_ratio_std >  0.09
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |--- mq2_ratio_mean >  6.42
+|   |   |   |   |   |   |--- mq2_ratio_mean <= 6.51
+|   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |--- mq2_ratio_mean >  6.51
+|   |   |   |   |   |   |   |--- mq2_ratio_mean <= 6.66
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- mq2_ratio_mean >  6.66
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |--- mq7_ratio_mean >  11.01
+|   |   |   |   |   |--- mq2_mq135_inter <= 15.02
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- mq2_mq135_inter >  15.02
+|   |   |   |   |   |   |--- mq135_ratio_mean <= 2.83
+|   |   |   |   |   |   |   |--- mq2_mq7_inter <= 69.71
+|   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |--- mq2_mq7_inter >  69.71
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- mq135_ratio_mean >  2.83
+|   |   |   |   |   |   |   |--- mq2_ratio_mean <= 6.35
+|   |   |   |   |   |   |   |   |--- mq2_mq7_inter <= 67.09
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- mq2_mq7_inter >  67.09
+|   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- mq2_ratio_mean >  6.35
+|   |   |   |   |   |   |   |   |--- class: 4
+|   |   |--- mq2_mq135_inter >  18.82
+|   |   |   |--- mq7_ratio_mean <= 10.85
+|   |   |   |   |--- mq2_ratio_mean <= 6.97
+|   |   |   |   |   |--- class: 1
+|   |   |   |   |--- mq2_ratio_mean >  6.97
+|   |   |   |   |   |--- log_mq7_ratio <= 1.00
+|   |   |   |   |   |   |--- mq135_ratio_mean <= 2.88
+|   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- mq135_ratio_mean >  2.88
+|   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |--- log_mq7_ratio >  1.00
+|   |   |   |   |   |   |--- class: 3
+|   |   |   |--- mq7_ratio_mean >  10.85
+|   |   |   |   |--- mq135_ratio_mean <= 3.05
+|   |   |   |   |   |--- mq2_ratio_mean <= 6.71
+|   |   |   |   |   |   |--- log_mq135_ratio <= 0.47
+|   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.09
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 2.86
+|   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  2.86
+|   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- mq2_ratio_std >  0.09
+|   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.82
+|   |   |   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.46
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |   |--- log_mq135_ratio >  0.46
+|   |   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.82
+|   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- log_mq135_ratio >  0.47
+|   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.05
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- mq2_ratio_std >  0.05
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 6.70
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  6.70
+|   |   |   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.48
+|   |   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |   |   |--- log_mq135_ratio >  0.48
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- mq2_ratio_mean >  6.71
+|   |   |   |   |   |   |--- mq135_ratio_mean <= 2.83
+|   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.04
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- log_mq7_ratio >  1.04
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- mq135_ratio_mean >  2.83
+|   |   |   |   |   |   |   |--- mq7_ratio_mean <= 11.66
+|   |   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.08
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.02
+|   |   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.02
+|   |   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |   |--- log_mq7_ratio >  1.08
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- mq7_ratio_mean >  11.66
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 2.96
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 6.85
+|   |   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  6.85
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  2.96
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 6.83
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  6.83
+|   |   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |--- mq135_ratio_mean >  3.05
+|   |   |   |   |   |--- mq2_mq7_inter <= 83.72
+|   |   |   |   |   |   |--- log_mq135_ratio <= 0.48
+|   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- log_mq135_ratio >  0.48
+|   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |--- mq2_mq7_inter >  83.72
+|   |   |   |   |   |   |--- log_mq2_ratio <= 0.86
+|   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- log_mq2_ratio >  0.86
+|   |   |   |   |   |   |   |--- mq7_ratio_mean <= 12.21
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- mq7_ratio_mean >  12.21
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |--- mq2_ratio_mean >  7.09
+|   |   |--- mq135_ratio_mean <= 3.23
+|   |   |   |--- mq7_ratio_mean <= 11.62
+|   |   |   |   |--- mq2_mq135_inter <= 22.60
+|   |   |   |   |   |--- mq7_ratio_mean <= 10.25
+|   |   |   |   |   |   |--- log_mq2_ratio <= 0.85
+|   |   |   |   |   |   |   |--- mq135_ratio_mean <= 2.88
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- mq135_ratio_mean >  2.88
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean <= 9.83
+|   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean >  9.83
+|   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |--- log_mq2_ratio >  0.85
+|   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.00
+|   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |--- log_mq7_ratio >  1.00
+|   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.86
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 7.34
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  7.34
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.86
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.04
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.04
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |--- mq7_ratio_mean >  10.25
+|   |   |   |   |   |   |--- mq135_ratio_mean <= 3.04
+|   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.03
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.47
+|   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio >  0.47
+|   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |--- log_mq7_ratio >  1.03
+|   |   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.16
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.10
+|   |   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std >  0.10
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- mq7_ratio_std >  0.16
+|   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- mq135_ratio_mean >  3.04
+|   |   |   |   |   |   |   |--- mq7_ratio_mean <= 11.23
+|   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |--- mq7_ratio_mean >  11.23
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.11
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.11
+|   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |--- mq2_mq135_inter >  22.60
+|   |   |   |   |   |--- mq2_ratio_mean <= 7.19
+|   |   |   |   |   |   |--- mq7_ratio_mean <= 11.26
+|   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |--- mq7_ratio_mean >  11.26
+|   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |--- mq2_ratio_mean >  7.19
+|   |   |   |   |   |   |--- mq135_ratio_mean <= 3.03
+|   |   |   |   |   |   |   |--- mq2_mq7_inter <= 74.37
+|   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |--- mq2_mq7_inter >  74.37
+|   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |--- mq135_ratio_mean >  3.03
+|   |   |   |   |   |   |   |--- mq7_ratio_mean <= 11.55
+|   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |--- mq7_ratio_mean >  11.55
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 7.40
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.12
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.12
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  7.40
+|   |   |   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.07
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |   |--- log_mq7_ratio >  1.07
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |--- mq7_ratio_mean >  11.62
+|   |   |   |   |--- mq135_ratio_mean <= 3.11
+|   |   |   |   |   |--- log_mq7_ratio <= 1.07
+|   |   |   |   |   |   |--- mq135_ratio_mean <= 3.02
+|   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.15
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- mq7_ratio_std >  0.15
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- mq135_ratio_mean >  3.02
+|   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- log_mq7_ratio >  1.07
+|   |   |   |   |   |   |--- mq2_ratio_mean <= 7.27
+|   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.08
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 7.25
+|   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  7.25
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.21
+|   |   |   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std >  0.21
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.08
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- mq2_ratio_mean >  7.27
+|   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.49
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- log_mq135_ratio >  0.49
+|   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |--- mq135_ratio_mean >  3.11
+|   |   |   |   |   |--- mq2_ratio_mean <= 7.60
+|   |   |   |   |   |   |--- mq7_ratio_mean <= 12.19
+|   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.07
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.14
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.14
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.16
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std >  0.16
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |--- log_mq7_ratio >  1.07
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean <= 11.77
+|   |   |   |   |   |   |   |   |   |--- mq2_mq7_inter <= 90.32
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |   |--- mq2_mq7_inter >  90.32
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean >  11.77
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.17
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std >  0.17
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- mq7_ratio_mean >  12.19
+|   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.18
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 7.42
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 7.16
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  7.16
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  7.42
+|   |   |   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.09
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- log_mq7_ratio >  1.09
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.18
+|   |   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.30
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.21
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.21
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- mq7_ratio_std >  0.30
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_std <= 0.02
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_std >  0.02
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- mq2_ratio_mean >  7.60
+|   |   |   |   |   |   |--- mq7_ratio_mean <= 12.00
+|   |   |   |   |   |   |   |--- mq7_ratio_mean <= 11.85
+|   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |--- mq7_ratio_mean >  11.85
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.51
+|   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio >  0.51
+|   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |--- mq7_ratio_mean >  12.00
+|   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.19
+|   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.89
+|   |   |   |   |   |   |   |   |   |--- mq2_mq7_inter <= 96.53
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq2_mq7_inter >  96.53
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.89
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 7.62
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  7.62
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- mq7_ratio_std >  0.19
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean <= 12.39
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.88
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.88
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean >  12.39
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_std <= 0.02
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_std >  0.02
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |--- mq135_ratio_mean >  3.23
+|   |   |   |--- mq7_ratio_mean <= 12.23
+|   |   |   |   |--- log_mq2_ratio <= 0.85
+|   |   |   |   |   |--- class: 4
+|   |   |   |   |--- log_mq2_ratio >  0.85
+|   |   |   |   |   |--- log_mq7_ratio <= 1.09
+|   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |--- log_mq7_ratio >  1.09
+|   |   |   |   |   |   |--- mq2_mq7_inter <= 92.91
+|   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |--- mq2_mq7_inter >  92.91
+|   |   |   |   |   |   |   |--- class: 3
+|   |   |   |--- mq7_ratio_mean >  12.23
+|   |   |   |   |--- class: 1
+|--- mq7_ratio_mean >  12.50
+|   |--- mq2_ratio_mean <= 7.85
+|   |   |--- mq7_ratio_mean <= 13.25
+|   |   |   |--- mq2_ratio_mean <= 7.63
+|   |   |   |   |--- mq7_ratio_mean <= 12.72
+|   |   |   |   |   |--- log_mq2_ratio <= 0.87
+|   |   |   |   |   |   |--- mq135_ratio_mean <= 3.21
+|   |   |   |   |   |   |   |--- mq2_ratio_mean <= 7.61
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- mq2_ratio_mean >  7.61
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.50
+|   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio >  0.50
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- mq135_ratio_mean >  3.21
+|   |   |   |   |   |   |   |--- mq2_mq135_inter <= 23.82
+|   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |--- mq2_mq135_inter >  23.82
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- log_mq2_ratio >  0.87
+|   |   |   |   |   |   |--- mq135_ratio_mean <= 3.21
+|   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.10
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.51
+|   |   |   |   |   |   |   |   |   |--- mq2_mq135_inter <= 23.81
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |   |--- mq2_mq135_inter >  23.81
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio >  0.51
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |--- log_mq7_ratio >  1.10
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.50
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio >  0.50
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.06
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std >  0.06
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |--- mq135_ratio_mean >  3.21
+|   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.51
+|   |   |   |   |   |   |   |   |--- mq135_ratio_std <= 0.02
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |--- mq135_ratio_std >  0.02
+|   |   |   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.09
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- log_mq7_ratio >  1.09
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- log_mq135_ratio >  0.51
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean <= 12.61
+|   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean >  12.61
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |--- mq7_ratio_mean >  12.72
+|   |   |   |   |   |--- mq2_ratio_mean <= 7.59
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- mq2_ratio_mean >  7.59
+|   |   |   |   |   |   |--- log_mq135_ratio <= 0.51
+|   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.22
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.22
+|   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.88
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.88
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |--- log_mq135_ratio >  0.51
+|   |   |   |   |   |   |   |--- mq135_ratio_std <= 0.03
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean <= 12.93
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.88
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.88
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean >  12.93
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |--- mq135_ratio_std >  0.03
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean <= 12.76
+|   |   |   |   |   |   |   |   |   |--- mq2_mq7_inter <= 94.76
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq2_mq7_inter >  94.76
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean >  12.76
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |--- mq2_ratio_mean >  7.63
+|   |   |   |   |--- mq7_ratio_mean <= 12.88
+|   |   |   |   |   |--- mq7_ratio_mean <= 12.58
+|   |   |   |   |   |   |--- mq7_ratio_std <= 0.26
+|   |   |   |   |   |   |   |--- mq135_ratio_std <= 0.06
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 7.63
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  7.63
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.87
+|   |   |   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.87
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- mq135_ratio_std >  0.06
+|   |   |   |   |   |   |   |   |--- mq2_mq7_inter <= 96.74
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.89
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.89
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |--- mq2_mq7_inter >  96.74
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |--- mq7_ratio_std >  0.26
+|   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.13
+|   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |--- mq2_ratio_std >  0.13
+|   |   |   |   |   |   |   |   |--- class: 4
+|   |   |   |   |   |--- mq7_ratio_mean >  12.58
+|   |   |   |   |   |   |--- mq135_ratio_mean <= 3.23
+|   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.18
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.50
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.10
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std >  0.10
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio >  0.50
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.12
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std >  0.12
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |--- mq7_ratio_std >  0.18
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.21
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.22
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std >  0.22
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.21
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.07
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std >  0.07
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |--- mq135_ratio_mean >  3.23
+|   |   |   |   |   |   |   |--- mq7_ratio_mean <= 12.70
+|   |   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.29
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.88
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.88
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- mq7_ratio_std >  0.29
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.10
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std >  0.10
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |--- mq7_ratio_mean >  12.70
+|   |   |   |   |   |   |   |   |--- mq135_ratio_std <= 0.04
+|   |   |   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.51
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- log_mq135_ratio >  0.51
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |--- mq135_ratio_std >  0.04
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.12
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std >  0.12
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |--- mq7_ratio_mean >  12.88
+|   |   |   |   |   |--- mq2_ratio_std <= 0.14
+|   |   |   |   |   |   |--- mq2_ratio_mean <= 7.70
+|   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.25
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.22
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.88
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.88
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.22
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.89
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.89
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.25
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 7.67
+|   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  7.67
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.08
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std >  0.08
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- mq2_ratio_mean >  7.70
+|   |   |   |   |   |   |   |--- mq7_ratio_mean <= 13.20
+|   |   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.39
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 7.82
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  7.82
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |--- mq7_ratio_std >  0.39
+|   |   |   |   |   |   |   |   |   |--- mq2_mq7_inter <= 101.27
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq2_mq7_inter >  101.27
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |--- mq7_ratio_mean >  13.20
+|   |   |   |   |   |   |   |   |--- mq2_mq7_inter <= 103.24
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.89
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.89
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |--- mq2_mq7_inter >  103.24
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean <= 7.82
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_mean >  7.82
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |--- mq2_ratio_std >  0.14
+|   |   |   |   |   |   |--- mq2_ratio_mean <= 7.77
+|   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.17
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- mq2_ratio_std >  0.17
+|   |   |   |   |   |   |   |   |--- mq2_mq7_inter <= 100.00
+|   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |--- mq2_mq7_inter >  100.00
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |--- mq2_ratio_mean >  7.77
+|   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.19
+|   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |--- mq7_ratio_std >  0.19
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean <= 13.14
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.20
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |   |--- mq2_ratio_std >  0.20
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean >  13.14
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.35
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |   |--- mq7_ratio_std >  0.35
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |--- mq7_ratio_mean >  13.25
+|   |   |   |--- mq2_ratio_mean <= 7.80
+|   |   |   |   |--- mq7_ratio_mean <= 13.31
+|   |   |   |   |   |--- mq2_ratio_std <= 0.08
+|   |   |   |   |   |   |--- mq7_ratio_std <= 0.20
+|   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- mq7_ratio_std >  0.20
+|   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |--- mq2_ratio_std >  0.08
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |--- mq7_ratio_mean >  13.31
+|   |   |   |   |   |--- mq2_ratio_std <= 0.02
+|   |   |   |   |   |   |--- mq7_ratio_std <= 0.13
+|   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- mq7_ratio_std >  0.13
+|   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |--- mq2_ratio_std >  0.02
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |--- mq2_ratio_mean >  7.80
+|   |   |   |   |--- mq7_ratio_mean <= 13.46
+|   |   |   |   |   |--- mq7_ratio_std <= 0.32
+|   |   |   |   |   |   |--- mq135_ratio_mean <= 3.28
+|   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.12
+|   |   |   |   |   |   |   |   |--- mq2_mq7_inter <= 100.79
+|   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |--- mq2_mq7_inter >  100.79
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |--- log_mq7_ratio >  1.12
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.27
+|   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.27
+|   |   |   |   |   |   |   |   |   |--- mq2_mq135_inter <= 25.33
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |   |--- mq2_mq135_inter >  25.33
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- mq135_ratio_mean >  3.28
+|   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.16
+|   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |--- mq2_ratio_std >  0.16
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- mq7_ratio_std >  0.32
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |--- mq7_ratio_mean >  13.46
+|   |   |   |   |   |--- class: 1
+|   |--- mq2_ratio_mean >  7.85
+|   |   |--- mq2_ratio_mean <= 7.90
+|   |   |   |--- mq7_ratio_mean <= 13.55
+|   |   |   |   |--- mq7_ratio_mean <= 12.95
+|   |   |   |   |   |--- mq135_ratio_mean <= 3.26
+|   |   |   |   |   |   |--- mq2_mq135_inter <= 26.07
+|   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- mq2_mq135_inter >  26.07
+|   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |--- mq135_ratio_mean >  3.26
+|   |   |   |   |   |   |--- class: 2
+|   |   |   |   |--- mq7_ratio_mean >  12.95
+|   |   |   |   |   |--- mq135_ratio_mean <= 3.25
+|   |   |   |   |   |   |--- mq7_ratio_std <= 0.19
+|   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |--- mq7_ratio_std >  0.19
+|   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.24
+|   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |--- mq7_ratio_std >  0.24
+|   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |--- mq135_ratio_mean >  3.25
+|   |   |   |   |   |   |--- mq2_mq7_inter <= 103.56
+|   |   |   |   |   |   |   |--- mq7_ratio_std <= 0.23
+|   |   |   |   |   |   |   |   |--- mq2_mq135_inter <= 26.01
+|   |   |   |   |   |   |   |   |   |--- mq2_mq7_inter <= 103.44
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |   |--- mq2_mq7_inter >  103.44
+|   |   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |--- mq2_mq135_inter >  26.01
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |--- mq7_ratio_std >  0.23
+|   |   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.14
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |--- mq2_ratio_std >  0.14
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- mq2_mq7_inter >  103.56
+|   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.12
+|   |   |   |   |   |   |   |   |--- log_mq2_ratio <= 0.90
+|   |   |   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.51
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- log_mq135_ratio >  0.51
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |--- log_mq2_ratio >  0.90
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |--- log_mq7_ratio >  1.12
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean <= 13.52
+|   |   |   |   |   |   |   |   |   |--- log_mq7_ratio <= 1.13
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |   |--- log_mq7_ratio >  1.13
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |--- mq7_ratio_mean >  13.52
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.29
+|   |   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.29
+|   |   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |--- mq7_ratio_mean >  13.55
+|   |   |   |   |--- mq135_ratio_mean <= 3.31
+|   |   |   |   |   |--- class: 1
+|   |   |   |   |--- mq135_ratio_mean >  3.31
+|   |   |   |   |   |--- mq135_ratio_std <= 0.04
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- mq135_ratio_std >  0.04
+|   |   |   |   |   |   |--- class: 3
+|   |   |--- mq2_ratio_mean >  7.90
+|   |   |   |--- mq7_ratio_std <= 0.27
+|   |   |   |   |--- mq2_mq7_inter <= 113.53
+|   |   |   |   |   |--- mq2_ratio_mean <= 7.91
+|   |   |   |   |   |   |--- log_mq7_ratio <= 1.13
+|   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |--- log_mq7_ratio >  1.13
+|   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.52
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio <= 0.51
+|   |   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |   |--- log_mq135_ratio >  0.51
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- log_mq135_ratio >  0.52
+|   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |--- mq2_ratio_mean >  7.91
+|   |   |   |   |   |   |--- class: 3
+|   |   |   |   |--- mq2_mq7_inter >  113.53
+|   |   |   |   |   |--- mq2_mq135_inter <= 26.76
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- mq2_mq135_inter >  26.76
+|   |   |   |   |   |   |--- class: 3
+|   |   |   |--- mq7_ratio_std >  0.27
+|   |   |   |   |--- mq7_ratio_std <= 0.28
+|   |   |   |   |   |--- class: 1
+|   |   |   |   |--- mq7_ratio_std >  0.28
+|   |   |   |   |   |--- mq135_ratio_std <= 0.06
+|   |   |   |   |   |   |--- mq135_ratio_std <= 0.03
+|   |   |   |   |   |   |   |--- mq135_ratio_mean <= 3.26
+|   |   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |   |   |--- mq135_ratio_mean >  3.26
+|   |   |   |   |   |   |   |   |--- mq2_ratio_std <= 0.08
+|   |   |   |   |   |   |   |   |   |--- class: 2
+|   |   |   |   |   |   |   |   |--- mq2_ratio_std >  0.08
+|   |   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- mq135_ratio_std >  0.03
+|   |   |   |   |   |   |   |--- class: 3
+|   |   |   |   |   |--- mq135_ratio_std >  0.06
+|   |   |   |   |   |   |--- class: 1
