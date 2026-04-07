@@ -1,0 +1,15 @@
+Model Name                     | Accuracy | F1-Score | Edge AI Suitability
+---------------------------------------------------------------------------------------------------------
+Decision Tree (Max Depth=4)    | 0.6738   | 0.6794   | 5/5 (Simple IF-THEN rules, perfect for Edge)
+Decision Tree (Unrestricted)   | 0.7234   | 0.7248   | 5/5 (Simple IF-THEN rules, perfect for Edge)
+Random Forest (10 Trees)       | 0.7021   | 0.6890   | 3/5 (Good, but C++ export requires MicroML)
+Random Forest (100 Trees)      | 0.7943   | 0.7859   | 3/5 (Good, but C++ export requires MicroML)
+Logistic Regression            | 0.4326   | 0.3612   | 5/5 (Simple mathematical equations, zero RAM)
+SVM (Linear Kernel)            | 0.5106   | 0.4210   | 5/5 (Simple mathematical equations, zero RAM)
+SVM (RBF Kernel)               | 0.3688   | 0.2207   | 2/5 (Math intensive, requires MicroML)
+KNN (k=3)                      | 0.7447   | 0.7396   | 1/5 (Poor, requires storing dataset in RAM)
+Naive Bayes                    | 0.2340   | 0.2009   | 4/5 (Probability tables, light memory footprint)
+
+==================================
+Best Edge-AI Ready Model: Random Forest (100 Trees) with Accuracy 0.7943
+==================================

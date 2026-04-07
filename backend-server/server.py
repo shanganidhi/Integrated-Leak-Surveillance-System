@@ -11,9 +11,9 @@ file_name = "multi_sensor_data.csv"
 def initialize_csv():
     header = [
         "date", "time", 
-        "mq2_adc", "mq2_rs", "mq2_ratio", "mq2_ppm",
-        "mq135_adc", "mq135_rs", "mq135_ratio", "mq135_ppm",
-        "mq7_adc", "mq7_rs", "mq7_ratio", "mq7_ppm",
+        "mq2_adc", "mq2_rs", "mq2_ratio", "mq2_ppm", "mq2_delta",
+        "mq135_adc", "mq135_rs", "mq135_ratio", "mq135_ppm", "mq135_delta",
+        "mq7_adc", "mq7_rs", "mq7_ratio", "mq7_ppm", "mq7_delta",
         "label"
     ]
     if not os.path.exists(file_name):
@@ -37,14 +37,17 @@ def log_data():
             data.get('mq2_rs'),
             data.get('mq2_ratio'),
             data.get('mq2_ppm'),
+            data.get('mq2_delta'),
             data.get('mq135_adc'),
             data.get('mq135_rs'),
             data.get('mq135_ratio'),
             data.get('mq135_ppm'),
+            data.get('mq135_delta'),
             data.get('mq7_adc'),
             data.get('mq7_rs'),
             data.get('mq7_ratio'),
             data.get('mq7_ppm'),
+            data.get('mq7_delta'),
             data.get('label', 0)
         ]
 

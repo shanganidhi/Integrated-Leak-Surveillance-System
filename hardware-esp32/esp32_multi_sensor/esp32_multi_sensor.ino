@@ -57,10 +57,21 @@ void setup() {
   Serial.println("Enter label (0–4)");
 }
 
+// ================= HELPER FUNCTIONS =================
+int readAverage(int pin) {
+  uint32_t sum = 0;
+  for (int i = 0; i < 10; i++) {
+    sum += analogRead(pin);
+    delay(5);
+  }
+  return sum / 10;
+}
+
 // ================= SENSOR FUNCTION =================
 void readSensor(int pin, float R0, int &adc, float &voltage, float &Rs, float &ratio, float &ppm) {
+  if (R0 <= 0) return;
 
-  adc = analogRead(pin);
+  adc = readAverage(pin);
   voltage = (adc / ADC_MAX) * VCC;
 
   if (voltage < 0.01) voltage = 0.01;
@@ -68,6 +79,7 @@ void readSensor(int pin, float R0, int &adc, float &voltage, float &Rs, float &r
   Rs = ((VCC - voltage) * RL) / voltage;
   ratio = Rs / R0;
 
+  // PPM calculation using log-linear regression model
   float logppm = (log10(ratio) - B_INTERCEPT) / M_SLOPE;
   ppm = pow(10, logppm);
 }
@@ -139,11 +151,29 @@ void loop() {
       json += "\"mq7_ratio\":" + String(ratio7) + ",";
       json += "\"mq7_ppm\":" + String(ppm7) + ",";
 
+      // Add Delta features for ML (change detection)
+      static float prev_r2 = 0, prev_r135 = 0, prev_r7 = 0;
+      float d2 = ratio2 - prev_r2;
+      float d135 = ratio135 - prev_r135;
+      float d7 = ratio7 - prev_r7;
+      prev_r2 = ratio2; prev_r135 = ratio135; prev_r7 = ratio7;
+
+      json += "\"mq2_delta\":" + String(d2) + ",";
+      json += "\"mq135_delta\":" + String(d135) + ",";
+      json += "\"mq7_delta\":" + String(d7) + ",";
+
       json += "\"label\":" + String(exposureLevel);
 
       json += "}";
 
-      http.POST(json);
+      int httpResponseCode = http.POST(json);
+      if (httpResponseCode > 0) {
+        Serial.print("Data sent! code: ");
+        Serial.println(httpResponseCode);
+      } else {
+        Serial.print("Send failed: ");
+        Serial.println(http.errorToString(httpResponseCode).c_str());
+      }
       http.end();
     }
 

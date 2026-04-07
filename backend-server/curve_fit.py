@@ -90,4 +90,4 @@ for sensor, res in results.items():
         print(f"#define {prefix}_B_INTERCEPT {b:.4f}")
 print("======================================================================")
 
-plt.show()
+# plt.show()
