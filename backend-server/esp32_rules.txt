@@ -1,0 +1,46 @@
+|--- mq7_ratio <= 12.27
+|   |--- mq135_ratio <= 3.04
+|   |   |--- mq7_ratio <= 10.80
+|   |   |   |--- mq135_ratio <= 2.79
+|   |   |   |   |--- class: 1
+|   |   |   |--- mq135_ratio >  2.79
+|   |   |   |   |--- class: 4
+|   |   |--- mq7_ratio >  10.80
+|   |   |   |--- mq2_ratio <= 6.58
+|   |   |   |   |--- class: 4
+|   |   |   |--- mq2_ratio >  6.58
+|   |   |   |   |--- class: 0
+|   |--- mq135_ratio >  3.04
+|   |   |--- mq2_ratio <= 7.58
+|   |   |   |--- mq7_ratio <= 11.57
+|   |   |   |   |--- class: 3
+|   |   |   |--- mq7_ratio >  11.57
+|   |   |   |   |--- class: 4
+|   |   |--- mq2_ratio >  7.58
+|   |   |   |--- mq7_ratio <= 12.16
+|   |   |   |   |--- class: 3
+|   |   |   |--- mq7_ratio >  12.16
+|   |   |   |   |--- class: 1
+|--- mq7_ratio >  12.27
+|   |--- mq2_ratio <= 7.83
+|   |   |--- mq2_ratio <= 7.69
+|   |   |   |--- mq2_delta <= -0.08
+|   |   |   |   |--- class: 1
+|   |   |   |--- mq2_delta >  -0.08
+|   |   |   |   |--- class: 1
+|   |   |--- mq2_ratio >  7.69
+|   |   |   |--- mq7_ratio <= 13.18
+|   |   |   |   |--- class: 2
+|   |   |   |--- mq7_ratio >  13.18
+|   |   |   |   |--- class: 1
+|   |--- mq2_ratio >  7.83
+|   |   |--- mq135_ratio <= 3.28
+|   |   |   |--- mq7_ratio <= 13.44
+|   |   |   |   |--- class: 3
+|   |   |   |--- mq7_ratio >  13.44
+|   |   |   |   |--- class: 1
+|   |   |--- mq135_ratio >  3.28
+|   |   |   |--- mq135_delta <= 0.06
+|   |   |   |   |--- class: 3
+|   |   |   |--- mq135_delta >  0.06
+|   |   |   |   |--- class: 1

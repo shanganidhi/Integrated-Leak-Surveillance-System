@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnO2 Gas Analytics — Cloud Dashboard</title>
+    <meta name="description" content="Real-time multi-sensor gas detection dashboard with ML-powered classification. Monitor MQ-2, MQ-135, and MQ-7 sensors with 90.9% accuracy stacking ensemble.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════
+           DESIGN TOKENS
+           ═══════════════════════════════════════════════════════ */
+        :root {
+            --bg-primary: #06090f;
+            --bg-secondary: #0c1220;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            --border-card: rgba(255, 255, 255, 0.06);
+            --text-primary: #f0f4fc;
+            --text-secondary: rgba(240, 244, 252, 0.55);
+            --text-muted: rgba(240, 244, 252, 0.3);
+
+            --color-clean: #22c55e;
+            --color-low: #eab308;
+            --color-medium: #f97316;
+            --color-high: #ef4444;
+            --color-critical: #dc2626;
+
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+
+            --glow-clean: 0 0 40px rgba(34,197,94,0.25);
+            --glow-low: 0 0 40px rgba(234,179,8,0.25);
+            --glow-medium: 0 0 40px rgba(249,115,22,0.25);
+            --glow-high: 0 0 40px rgba(239,68,68,0.3);
+            --glow-critical: 0 0 60px rgba(220,38,38,0.4);
+
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           RESET & BASE
+           ═══════════════════════════════════════════════════════ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           ANIMATED BACKGROUND
+           ═══════════════════════════════════════════════════════ */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%);
+        }
+
+        .bg-glow {
+            position: fixed;
+            z-index: 0;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            pointer-events: none;
+            animation: floatGlow 20s ease-in-out infinite;
+        }
+        .bg-glow.g1 { width: 500px; height: 500px; background: var(--accent-cyan); top: -100px; left: -100px; }
+        .bg-glow.g2 { width: 600px; height: 600px; background: var(--accent-purple); bottom: -200px; right: -150px; animation-delay: -7s; }
+        .bg-glow.g3 { width: 400px; height: 400px; background: var(--accent-blue); top: 40%; left: 50%; animation-delay: -14s; }
+
+        @keyframes floatGlow {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 30px) scale(0.95); }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           LAYOUT
+           ═══════════════════════════════════════════════════════ */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 24px 28px 60px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════ */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .header-left h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-left .subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            background: rgba(34,197,94,0.1);
+            border: 1px solid rgba(34,197,94,0.2);
+            color: var(--color-clean);
+        }
+
+        .status-badge .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .demo-btn {
+            padding: 8px 18px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            border: 1px solid var(--accent-purple);
+            background: rgba(139,92,246,0.1);
+            color: var(--accent-purple);
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .demo-btn:hover {
+            background: rgba(139,92,246,0.2);
+            box-shadow: 0 0 20px rgba(139,92,246,0.2);
+        }
+
+        .demo-btn.active {
+            background: var(--accent-purple);
+            color: white;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           CARDS
+           ═══════════════════════════════════════════════════════ */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px 0;
+        }
+
+        .card-title {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+        }
+
+        .card-body {
+            padding: 18px 22px 22px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           GRID LAYOUT
+           ═══════════════════════════════════════════════════════ */
+        .grid-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .grid-charts {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .grid-bottom {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           STATUS HERO
+           ═══════════════════════════════════════════════════════ */
+        .status-hero {
+            grid-column: 1 / -1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-hero .card-body {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .status-hero .hero-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.08;
+            transition: opacity 0.5s ease;
+        }
+
+        .status-hero.level-0 { border-color: rgba(34,197,94,0.3); box-shadow: var(--glow-clean); }
+        .status-hero.level-0 .hero-bg { background: linear-gradient(135deg, var(--color-clean), transparent); }
+        .status-hero.level-1 { border-color: rgba(234,179,8,0.3); box-shadow: var(--glow-low); }
+        .status-hero.level-1 .hero-bg { background: linear-gradient(135deg, var(--color-low), transparent); }
+        .status-hero.level-2 { border-color: rgba(249,115,22,0.3); box-shadow: var(--glow-medium); }
+        .status-hero.level-2 .hero-bg { background: linear-gradient(135deg, var(--color-medium), transparent); }
+        .status-hero.level-3 { border-color: rgba(239,68,68,0.3); box-shadow: var(--glow-high); }
+        .status-hero.level-3 .hero-bg { background: linear-gradient(135deg, var(--color-high), transparent); }
+        .status-hero.level-4 { border-color: rgba(220,38,38,0.4); box-shadow: var(--glow-critical); animation: criticalPulse 1.5s ease-in-out infinite; }
+        .status-hero.level-4 .hero-bg { background: linear-gradient(135deg, var(--color-critical), transparent); opacity: 0.15; }
+
+        @keyframes criticalPulse {
+            0%, 100% { box-shadow: var(--glow-critical); }
+            50% { box-shadow: 0 0 80px rgba(220,38,38,0.5); }
+        }
+
+        .hero-left { display: flex; align-items: center; gap: 24px; }
+
+        .hero-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: var(--transition);
+        }
+
+        .level-0 .hero-icon { background: rgba(34,197,94,0.15); }
+        .level-1 .hero-icon { background: rgba(234,179,8,0.15); }
+        .level-2 .hero-icon { background: rgba(249,115,22,0.15); }
+        .level-3 .hero-icon { background: rgba(239,68,68,0.15); }
+        .level-4 .hero-icon { background: rgba(220,38,38,0.2); animation: shakeIcon 0.5s ease-in-out infinite; }
+
+        @keyframes shakeIcon {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px) rotate(-2deg); }
+            75% { transform: translateX(2px) rotate(2deg); }
+        }
+
+        .hero-label {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            transition: color var(--transition);
+        }
+
+        .hero-sublabel {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .hero-right {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .hero-metric {
+            text-align: center;
+        }
+
+        .hero-metric .value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .hero-metric .label {
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-top: 2px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           SENSOR GAUGE CARDS
+           ═══════════════════════════════════════════════════════ */
+        .gauge-card .card-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 22px 24px;
+        }
+
+        .gauge-svg {
+            width: 140px;
+            height: 80px;
+            overflow: visible;
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.06);
+            stroke-width: 10;
+            stroke-linecap: round;
+        }
+
+        .gauge-fill {
+            fill: none;
+            stroke-width: 10;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease;
+            filter: drop-shadow(0 0 6px currentColor);
+        }
+
+        .gauge-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 10px;
+            transition: color var(--transition);
+        }
+
+        .gauge-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 4px;
+        }
+
+        .gauge-ppm {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           TIME SERIES CHART
+           ═══════════════════════════════════════════════════════ */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 280px;
+        }
+
+        .chart-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 18px;
+            padding: 12px 0 0;
+        }
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+
+        .chart-legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           ML PANEL
+           ═══════════════════════════════════════════════════════ */
+        .ml-panel .card-body { padding: 16px 22px 22px; }
+
+        .accuracy-ring {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+
+        .accuracy-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .accuracy-ring .ring-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.06);
+            stroke-width: 6;
+        }
+
+        .accuracy-ring .ring-fill {
+            fill: none;
+            stroke: var(--accent-cyan);
+            stroke-width: 6;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+            filter: drop-shadow(0 0 6px var(--accent-cyan));
+        }
+
+        .accuracy-ring .ring-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .accuracy-ring .ring-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .accuracy-ring .ring-label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .prob-bars { margin-top: 8px; }
+
+        .prob-bar-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .prob-bar-label {
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            min-width: 72px;
+            white-space: nowrap;
+        }
+
+        .prob-bar-track {
+            flex: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .prob-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+
+        .prob-bar-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            min-width: 38px;
+            text-align: right;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           ALERT LOG
+           ═══════════════════════════════════════════════════════ */
+        .alert-log { max-height: 320px; overflow-y: auto; }
+
+        .alert-log::-webkit-scrollbar { width: 4px; }
+        .alert-log::-webkit-scrollbar-track { background: transparent; }
+        .alert-log::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .alert-badge.critical { background: rgba(220,38,38,0.15); color: var(--color-critical); }
+        .alert-badge.warning { background: rgba(234,179,8,0.12); color: var(--color-low); }
+        .alert-badge.info { background: rgba(6,182,212,0.1); color: var(--accent-cyan); }
+
+        .alert-message {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .alert-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        .empty-state .icon { font-size: 2rem; margin-bottom: 8px; }
+
+        /* ═══════════════════════════════════════════════════════
+           FEATURE TABLE
+           ═══════════════════════════════════════════════════════ */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 14px;
+        }
+
+        .feature-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .feature-name {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .feature-value {
+            font-size: 0.72rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-cyan);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════════════ */
+        @media (max-width: 1024px) {
+            .grid-main { grid-template-columns: 1fr 1fr; }
+            .grid-charts { grid-template-columns: 1fr; }
+            .grid-bottom { grid-template-columns: 1fr; }
+            .hero-right { gap: 20px; }
+        }
+
+        @media (max-width: 640px) {
+            .app-container { padding: 16px 14px 40px; }
+            .grid-main { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 14px; align-items: flex-start; }
+            .header-right { width: 100%; justify-content: space-between; }
+            .status-hero .card-body { flex-direction: column; gap: 20px; text-align: center; }
+            .hero-left { flex-direction: column; }
+            .hero-label { font-size: 1.4rem; }
+            .hero-right { gap: 16px; flex-wrap: wrap; justify-content: center; }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           UTILITY ANIMATIONS
+           ═══════════════════════════════════════════════════════ */
+        .shimmer {
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .count-up {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow g1"></div>
+    <div class="bg-glow g2"></div>
+    <div class="bg-glow g3"></div>
+
+    <div class="app-container">
+        <!-- ─── HEADER ────────────────────────────────────── -->
+        <header class="header" id="app-header">
+            <div class="header-left">
+                <h1>⚗️ SnO2 Gas Analytics</h1>
+                <div class="subtitle">Multi-Sensor Cloud Dashboard • Stacking ML Ensemble</div>
+            </div>
+            <div class="header-right">
+                <div class="status-badge" id="connection-badge">
+                    <span class="dot"></span>
+                    <span id="connection-text">Connecting...</span>
+                </div>
+                <button class="demo-btn" id="demo-btn" onclick="toggleDemo()">▶ Demo Mode</button>
+            </div>
+        </header>
+
+        <!-- ─── STATUS HERO ──────────────────────────────── -->
+        <div class="grid-main">
+            <div class="card status-hero level-0" id="status-hero">
+                <div class="hero-bg"></div>
+                <div class="card-body">
+                    <div class="hero-left">
+                        <div class="hero-icon" id="hero-icon">🌿</div>
+                        <div>
+                            <div class="hero-label" id="hero-label">CLEAN AIR</div>
+                            <div class="hero-sublabel" id="hero-sublabel">All sensors nominal</div>
+                        </div>
+                    </div>
+                    <div class="hero-right">
+                        <div class="hero-metric">
+                            <div class="value" id="reading-count" style="color: var(--accent-cyan);">0</div>
+                            <div class="label">Readings</div>
+                        </div>
+                        <div class="hero-metric">
+                            <div class="value" id="uptime" style="color: var(--accent-purple);">0s</div>
+                            <div class="label">Uptime</div>
+                        </div>
+                        <div class="hero-metric">
+                            <div class="value" id="model-status" style="color: var(--color-clean);">—</div>
+                            <div class="label">Model</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── SENSOR GAUGES ────────────────────────────── -->
+        <div class="grid-main">
+            <div class="card gauge-card" id="gauge-mq2">
+                <div class="card-header">
+                    <span class="card-title">MQ-2 • Combustible Gas</span>
+                </div>
+                <div class="card-body">
+                    <svg class="gauge-svg" viewBox="0 0 140 80">
+                        <path class="gauge-bg" d="M 15 70 A 55 55 0 0 1 125 70"/>
+                        <path class="gauge-fill" id="gauge-fill-mq2" d="M 15 70 A 55 55 0 0 1 125 70"
+                              stroke="var(--accent-cyan)" stroke-dasharray="173" stroke-dashoffset="173"/>
+                    </svg>
+                    <div class="gauge-value" id="gauge-val-mq2">—</div>
+                    <div class="gauge-label">Rs/R0 Ratio</div>
+                    <div class="gauge-ppm" id="gauge-ppm-mq2">— ppm</div>
+                </div>
+            </div>
+
+            <div class="card gauge-card" id="gauge-mq135">
+                <div class="card-header">
+                    <span class="card-title">MQ-135 • Air Quality</span>
+                </div>
+                <div class="card-body">
+                    <svg class="gauge-svg" viewBox="0 0 140 80">
+                        <path class="gauge-bg" d="M 15 70 A 55 55 0 0 1 125 70"/>
+                        <path class="gauge-fill" id="gauge-fill-mq135" d="M 15 70 A 55 55 0 0 1 125 70"
+                              stroke="var(--accent-purple)" stroke-dasharray="173" stroke-dashoffset="173"/>
+                    </svg>
+                    <div class="gauge-value" id="gauge-val-mq135">—</div>
+                    <div class="gauge-label">Rs/R0 Ratio</div>
+                    <div class="gauge-ppm" id="gauge-ppm-mq135">— ppm</div>
+                </div>
+            </div>
+
+            <div class="card gauge-card" id="gauge-mq7">
+                <div class="card-header">
+                    <span class="card-title">MQ-7 • Carbon Monoxide</span>
+                </div>
+                <div class="card-body">
+                    <svg class="gauge-svg" viewBox="0 0 140 80">
+                        <path class="gauge-bg" d="M 15 70 A 55 55 0 0 1 125 70"/>
+                        <path class="gauge-fill" id="gauge-fill-mq7" d="M 15 70 A 55 55 0 0 1 125 70"
+                              stroke="var(--accent-blue)" stroke-dasharray="173" stroke-dashoffset="173"/>
+                    </svg>
+                    <div class="gauge-value" id="gauge-val-mq7">—</div>
+                    <div class="gauge-label">Rs/R0 Ratio</div>
+                    <div class="gauge-ppm" id="gauge-ppm-mq7">— ppm</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── CHART + ML PANEL ─────────────────────────── -->
+        <div class="grid-charts">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📈 Sensor Time Series</span>
+                    <span class="card-title" id="chart-count" style="color: var(--text-muted);">0 points</span>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="time-chart"></canvas>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="chart-legend-item">
+                            <span class="chart-legend-dot" style="background: var(--accent-cyan);"></span>
+                            MQ-2
+                        </div>
+                        <div class="chart-legend-item">
+                            <span class="chart-legend-dot" style="background: var(--accent-purple);"></span>
+                            MQ-135
+                        </div>
+                        <div class="chart-legend-item">
+                            <span class="chart-legend-dot" style="background: var(--accent-blue);"></span>
+                            MQ-7
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card ml-panel">
+                <div class="card-header">
+                    <span class="card-title">🧠 ML Inference</span>
+                </div>
+                <div class="card-body">
+                    <div class="accuracy-ring">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="ring-bg" cx="50" cy="50" r="42"/>
+                            <circle class="ring-fill" id="accuracy-fill" cx="50" cy="50" r="42"
+                                    stroke-dasharray="264" stroke-dashoffset="264"/>
+                        </svg>
+                        <div class="ring-text">
+                            <span class="ring-value" id="accuracy-value">—</span>
+                            <span class="ring-label">Accuracy</span>
+                        </div>
+                    </div>
+
+                    <div class="prob-bars" id="prob-bars">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── ALERTS + FEATURES ────────────────────────── -->
+        <div class="grid-bottom">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🚨 Alert History</span>
+                    <span class="card-title" id="alert-count" style="color: var(--text-muted);">0</span>
+                </div>
+                <div class="card-body">
+                    <div class="alert-log" id="alert-log">
+                        <div class="empty-state">
+                            <div class="icon">📡</div>
+                            Waiting for sensor data...<br>
+                            <small>Start Demo Mode or connect ESP32</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">⚙️ Feature Vector</span>
+                </div>
+                <div class="card-body">
+                    <div class="feature-grid" id="feature-grid">
+                        <div class="empty-state" style="grid-column: 1/-1;">
+                            <div class="icon">🔢</div>
+                            No features computed yet
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         JAVASCRIPT ENGINE
+         ═══════════════════════════════════════════════════════ -->
+    <script>
+        // ── CONFIG ──
+        const POLL_INTERVAL = 2000;
+        const CHART_MAX_POINTS = 80;
+        const GAUGE_ARC_LENGTH = 173; // SVG arc length
+
+        // ── STATE ──
+        let chartData = { mq2: [], mq135: [], mq7: [], times: [], predictions: [] };
+        let startTime = Date.now();
+        let isDemo = false;
+        let canvas, ctx;
+
+        // ── COLORS ──
+        const levelColors = ['#22c55e', '#eab308', '#f97316', '#ef4444', '#dc2626'];
+        const levelNames = ['CLEAN AIR', 'LOW GAS', 'MEDIUM GAS', 'HIGH GAS — WARNING', 'CRITICAL — EVACUATE'];
+        const levelIcons = ['🌿', '🔬', '⚠️', '🔥', '☢️'];
+        const levelSublabels = [
+            'All sensors nominal',
+            'Minor gas traces detected',
+            'Moderate concentration — monitor closely',
+            'High gas levels — take action',
+            'Dangerous levels — evacuate immediately'
+        ];
+        const probBarColors = {
+            0: '#22c55e', 1: '#eab308', 2: '#f97316', 3: '#ef4444', 4: '#dc2626'
+        };
+
+        // ── INIT ──
+        window.addEventListener('DOMContentLoaded', () => {
+            canvas = document.getElementById('time-chart');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            pollData();
+            setInterval(pollData, POLL_INTERVAL);
+            setInterval(updateUptime, 1000);
+            checkDemoStatus();
+        });
+
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth * window.devicePixelRatio;
+            canvas.height = container.clientHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            drawChart();
+        }
+
+        // ── POLLING ──
+        async function pollData() {
+            try {
+                const [latestRes, statsRes] = await Promise.all([
+                    fetch('/api/latest'),
+                    fetch('/api/stats')
+                ]);
+                const latest = await latestRes.json();
+                const stats = await statsRes.json();
+
+                if (latest.status === 'ok' && latest.data) {
+                    updateHero(latest.data);
+                    updateGauges(latest.data);
+                    addChartPoint(latest.data);
+                    updateML(latest.data, latest.model_accuracy);
+                    updateFeatures(latest.data);
+                    updateConnectionBadge(true, latest.data.demo);
+                    document.getElementById('reading-count').textContent = latest.total_readings;
+                    document.getElementById('model-status').textContent =
+                        latest.model_loaded ? '✅ Live' : '⚠️ None';
+                }
+
+                if (stats.status === 'ok' && stats.alerts) {
+                    updateAlerts(stats.alerts);
+                }
+            } catch (err) {
+                updateConnectionBadge(false);
+            }
+        }
+
+        // ── HERO STATUS ──
+        function updateHero(data) {
+            const level = data.prediction || 0;
+            const hero = document.getElementById('status-hero');
+            hero.className = `card status-hero level-${level}`;
+            document.getElementById('hero-icon').textContent = levelIcons[level];
+            document.getElementById('hero-label').textContent = levelNames[level];
+            document.getElementById('hero-label').style.color = levelColors[level];
+            document.getElementById('hero-sublabel').textContent = levelSublabels[level];
+        }
+
+        // ── GAUGES ──
+        function updateGauges(data) {
+            updateSingleGauge('mq2', data.mq2_ratio, data.mq2_ppm, 3, 10, 'var(--accent-cyan)');
+            updateSingleGauge('mq135', data.mq135_ratio, data.mq135_ppm, 2, 5, 'var(--accent-purple)');
+            updateSingleGauge('mq7', data.mq7_ratio, data.mq7_ppm, 5, 15, 'var(--accent-blue)');
+        }
+
+        function updateSingleGauge(id, ratio, ppm, minR, maxR, color) {
+            const fill = document.getElementById(`gauge-fill-${id}`);
+            const valEl = document.getElementById(`gauge-val-${id}`);
+            const ppmEl = document.getElementById(`gauge-ppm-${id}`);
+
+            // Normalize ratio to 0-1 (invert: lower ratio = more gas)
+            const norm = Math.max(0, Math.min(1, (ratio - minR) / (maxR - minR)));
+            const offset = GAUGE_ARC_LENGTH * (1 - norm);
+
+            fill.style.strokeDashoffset = offset;
+            valEl.textContent = (ratio || 0).toFixed(2);
+            ppmEl.textContent = (ppm || 0).toFixed(2) + ' ppm';
+
+            // Color based on danger
+            if (norm < 0.3) {
+                fill.setAttribute('stroke', 'var(--color-high)');
+                valEl.style.color = 'var(--color-high)';
+            } else if (norm < 0.5) {
+                fill.setAttribute('stroke', 'var(--color-medium)');
+                valEl.style.color = 'var(--color-medium)';
+            } else if (norm < 0.7) {
+                fill.setAttribute('stroke', 'var(--color-low)');
+                valEl.style.color = 'var(--color-low)';
+            } else {
+                fill.setAttribute('stroke', color);
+                valEl.style.color = color;
+            }
+        }
+
+        // ── TIME SERIES CHART (Canvas) ──
+        function addChartPoint(data) {
+            const time = data.time || new Date().toLocaleTimeString();
+            chartData.mq2.push(data.mq2_ratio || 0);
+            chartData.mq135.push(data.mq135_ratio || 0);
+            chartData.mq7.push(data.mq7_ratio || 0);
+            chartData.times.push(time);
+            chartData.predictions.push(data.prediction || 0);
+
+            if (chartData.mq2.length > CHART_MAX_POINTS) {
+                chartData.mq2.shift(); chartData.mq135.shift();
+                chartData.mq7.shift(); chartData.times.shift();
+                chartData.predictions.shift();
+            }
+
+            document.getElementById('chart-count').textContent = chartData.mq2.length + ' points';
+            drawChart();
+        }
+
+        function drawChart() {
+            if (!ctx) return;
+            const w = canvas.parentElement.clientWidth;
+            const h = canvas.parentElement.clientHeight;
+
+            ctx.clearRect(0, 0, w, h);
+
+            if (chartData.mq2.length < 2) {
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                ctx.font = '13px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText('Waiting for data...', w / 2, h / 2);
+                return;
+            }
+
+            const pad = { top: 15, right: 15, bottom: 30, left: 42 };
+            const plotW = w - pad.left - pad.right;
+            const plotH = h - pad.top - pad.bottom;
+
+            // Find global min/max
+            const allVals = [...chartData.mq2, ...chartData.mq135, ...chartData.mq7];
+            let minVal = Math.min(...allVals) * 0.95;
+            let maxVal = Math.max(...allVals) * 1.05;
+            if (maxVal - minVal < 0.5) { maxVal += 0.25; minVal -= 0.25; }
+
+            // Grid lines
+            ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i <= 4; i++) {
+                const y = pad.top + plotH * (i / 4);
+                ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y); ctx.stroke();
+
+                const val = maxVal - (maxVal - minVal) * (i / 4);
+                ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                ctx.font = '10px JetBrains Mono';
+                ctx.textAlign = 'right';
+                ctx.fillText(val.toFixed(1), pad.left - 6, y + 3);
+            }
+
+            // Time labels
+            const step = Math.max(1, Math.floor(chartData.times.length / 6));
+            ctx.fillStyle = 'rgba(255,255,255,0.15)';
+            ctx.font = '9px JetBrains Mono';
+            ctx.textAlign = 'center';
+            for (let i = 0; i < chartData.times.length; i += step) {
+                const x = pad.left + (i / (chartData.times.length - 1)) * plotW;
+                ctx.fillText(chartData.times[i], x, h - 6);
+            }
+
+            // Draw prediction bands (subtle background)
+            for (let i = 0; i < chartData.predictions.length - 1; i++) {
+                const x1 = pad.left + (i / (chartData.predictions.length - 1)) * plotW;
+                const x2 = pad.left + ((i + 1) / (chartData.predictions.length - 1)) * plotW;
+                const lvl = chartData.predictions[i];
+                if (lvl >= 3) {
+                    ctx.fillStyle = lvl === 4 ? 'rgba(220,38,38,0.06)' : 'rgba(239,68,68,0.04)';
+                    ctx.fillRect(x1, pad.top, x2 - x1, plotH);
+                }
+            }
+
+            // Draw lines
+            function drawLine(dataArr, color) {
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.lineJoin = 'round';
+
+                for (let i = 0; i < dataArr.length; i++) {
+                    const x = pad.left + (i / (dataArr.length - 1)) * plotW;
+                    const y = pad.top + plotH * (1 - (dataArr[i] - minVal) / (maxVal - minVal));
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // Gradient fill
+                const gradient = ctx.createLinearGradient(0, pad.top, 0, pad.top + plotH);
+                gradient.addColorStop(0, color.replace(')', ',0.1)').replace('rgb', 'rgba'));
+                gradient.addColorStop(1, color.replace(')', ',0)').replace('rgb', 'rgba'));
+
+                ctx.lineTo(pad.left + plotW, pad.top + plotH);
+                ctx.lineTo(pad.left, pad.top + plotH);
+                ctx.closePath();
+                ctx.fillStyle = gradient;
+                ctx.fill();
+            }
+
+            drawLine(chartData.mq2, 'rgb(6, 182, 212)');
+            drawLine(chartData.mq135, 'rgb(139, 92, 246)');
+            drawLine(chartData.mq7, 'rgb(59, 130, 246)');
+
+            // Current value dots
+            function drawDot(dataArr, color) {
+                if (dataArr.length === 0) return;
+                const x = pad.left + plotW;
+                const y = pad.top + plotH * (1 - (dataArr[dataArr.length-1] - minVal) / (maxVal - minVal));
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x, y, 7, 0, Math.PI * 2);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1;
+                ctx.globalAlpha = 0.3;
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
+
+            drawDot(chartData.mq2, 'rgb(6, 182, 212)');
+            drawDot(chartData.mq135, 'rgb(139, 92, 246)');
+            drawDot(chartData.mq7, 'rgb(59, 130, 246)');
+        }
+
+        // ── ML PANEL ──
+        function updateML(data, accuracy) {
+            // Accuracy ring
+            const accPct = accuracy ? (accuracy * 100).toFixed(1) : 0;
+            const accFill = document.getElementById('accuracy-fill');
+            const offset = 264 * (1 - (accuracy || 0));
+            accFill.style.strokeDashoffset = offset;
+            document.getElementById('accuracy-value').textContent = accPct + '%';
+
+            // Probability bars
+            const container = document.getElementById('prob-bars');
+            const probs = data.probabilities || {};
+            const labels = {0:'Clean Air', 1:'Low Gas', 2:'Medium', 3:'High', 4:'Critical'};
+
+            let html = '';
+            for (let i = 0; i <= 4; i++) {
+                const p = (probs[i] || 0) * 100;
+                const color = probBarColors[i];
+                const isActive = data.prediction === i;
+                html += `
+                    <div class="prob-bar-item">
+                        <span class="prob-bar-label" style="${isActive ? 'color:'+color+';font-weight:600;' : ''}">${labels[i]}</span>
+                        <div class="prob-bar-track">
+                            <div class="prob-bar-fill" style="width:${p}%;background:${color};${isActive?'box-shadow:0 0 8px '+color:''}"></div>
+                        </div>
+                        <span class="prob-bar-value" style="${isActive?'color:'+color:''}">${p.toFixed(1)}%</span>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        // ── FEATURES ──
+        function updateFeatures(data) {
+            const features = data.features;
+            if (!features || features.length === 0) return;
+
+            const names = [
+                'log_r2', 'log_r135', 'log_r7',
+                'mean_r2', 'mean_r135', 'mean_r7',
+                'std_r2', 'std_r135', 'std_r7',
+                'r2×r7', 'r2×r135'
+            ];
+
+            const grid = document.getElementById('feature-grid');
+            let html = '';
+            features.forEach((v, i) => {
+                html += `
+                    <div class="feature-item">
+                        <span class="feature-name">${names[i] || 'f'+i}</span>
+                        <span class="feature-value">${(typeof v === 'number' ? v.toFixed(4) : v)}</span>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        // ── ALERTS ──
+        function updateAlerts(alerts) {
+            const container = document.getElementById('alert-log');
+            document.getElementById('alert-count').textContent = alerts.length;
+
+            if (!alerts || alerts.length === 0) {
+                container.innerHTML = `<div class="empty-state"><div class="icon">✅</div>No alerts — all clear</div>`;
+                return;
+            }
+
+            let html = '';
+            const reversed = [...alerts].reverse();
+            reversed.forEach(a => {
+                const badgeClass = a.level === 'CRITICAL' ? 'critical' : 'warning';
+                const time = a.timestamp ? new Date(a.timestamp).toLocaleTimeString() : '';
+                html += `
+                    <div class="alert-item">
+                        <span class="alert-badge ${badgeClass}">${a.level}</span>
+                        <div>
+                            <div class="alert-message">${a.message}</div>
+                            <div class="alert-time">${time}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // ── CONNECTION BADGE ──
+        function updateConnectionBadge(connected, isDemo) {
+            const badge = document.getElementById('connection-badge');
+            const text = document.getElementById('connection-text');
+            if (connected) {
+                badge.style.borderColor = isDemo ? 'rgba(139,92,246,0.3)' : 'rgba(34,197,94,0.3)';
+                badge.style.background = isDemo ? 'rgba(139,92,246,0.1)' : 'rgba(34,197,94,0.1)';
+                badge.style.color = isDemo ? 'var(--accent-purple)' : 'var(--color-clean)';
+                text.textContent = isDemo ? 'Demo Active' : 'ESP32 Live';
+            } else {
+                badge.style.borderColor = 'rgba(239,68,68,0.3)';
+                badge.style.background = 'rgba(239,68,68,0.1)';
+                badge.style.color = 'var(--color-high)';
+                text.textContent = 'Disconnected';
+            }
+        }
+
+        // ── UPTIME ──
+        function updateUptime() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const mins = Math.floor(elapsed / 60);
+            const secs = elapsed % 60;
+            document.getElementById('uptime').textContent =
+                mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+        }
+
+        // ── DEMO MODE ──
+        async function toggleDemo() {
+            const btn = document.getElementById('demo-btn');
+            if (isDemo) {
+                await fetch('/api/demo/stop', { method: 'POST' });
+                isDemo = false;
+                btn.textContent = '▶ Demo Mode';
+                btn.classList.remove('active');
+            } else {
+                await fetch('/api/demo/start', { method: 'POST' });
+                isDemo = true;
+                btn.textContent = '⏹ Stop Demo';
+                btn.classList.add('active');
+            }
+        }
+
+        async function checkDemoStatus() {
+            try {
+                const res = await fetch('/api/demo/status');
+                const data = await res.json();
+                isDemo = data.demo_active;
+                const btn = document.getElementById('demo-btn');
+                if (isDemo) {
+                    btn.textContent = '⏹ Stop Demo';
+                    btn.classList.add('active');
+                }
+            } catch(e) {}
+        }
+    </script>
+</body>
+</html>

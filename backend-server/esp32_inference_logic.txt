@@ -1,0 +1,14 @@
+int predictGasLevel(float mq2_r, float mq135_r, float mq7_r) {
+  // Simplified Logic derived from your Phase 2 Data
+  if (mq7_r <= 12.27) {
+    if (mq135_r <= 3.04) {
+      if (mq7_r <= 10.80) return 4; // High Gas Detection
+      else return 3;               // Medium Gas
+    } else {
+      return 2;                    // Low Gas / Transitional
+    }
+  } else {
+    if (mq2_r > 7.83) return 1;    // Slight detection
+    return 0;                      // Clean Air
+  }
+}

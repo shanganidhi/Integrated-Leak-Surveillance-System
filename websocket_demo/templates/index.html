@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnO2 Hierarchical Gas Intelligence</title>
+    <meta name="description" content="Real-time Edge-Fog-Cloud gas analytics with WebSocket streaming, anomaly detection, and event prediction engine.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <style>
+        /* ═════════════════════════════════════════════════
+           DESIGN SYSTEM — CINEMATIC DARK
+           ═════════════════════════════════════════════════ */
+        :root {
+            --bg-0: #04070d;
+            --bg-1: #0a0f1a;
+            --bg-card: rgba(12, 18, 32, 0.7);
+            --bg-glass: rgba(255,255,255,0.025);
+            --border: rgba(255,255,255,0.06);
+            --border-hover: rgba(255,255,255,0.12);
+
+            --text-1: #edf2fc;
+            --text-2: rgba(237,242,252,0.5);
+            --text-3: rgba(237,242,252,0.25);
+
+            --cyan: #06b6d4;
+            --purple: #8b5cf6;
+            --blue: #3b82f6;
+            --pink: #ec4899;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --orange: #f97316;
+            --red: #ef4444;
+            --crimson: #dc2626;
+
+            --radius: 14px;
+            --radius-sm: 8px;
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Inter', -apple-system, sans-serif;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 15px; -webkit-font-smoothing: antialiased; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg-0);
+            color: var(--text-1);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ─── BACKGROUND ──────────────────── */
+        .bg-mesh {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse 50% 40% at 15% 10%, rgba(6,182,212,0.07), transparent),
+                radial-gradient(ellipse 40% 50% at 85% 90%, rgba(139,92,246,0.06), transparent),
+                radial-gradient(ellipse 30% 30% at 50% 50%, rgba(59,130,246,0.03), transparent);
+        }
+        .scan-line {
+            position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 999;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            animation: scanMove 4s linear infinite;
+            opacity: 0.4;
+        }
+        @keyframes scanMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+
+        /* ─── LAYOUT ──────────────────────── */
+        .shell {
+            position: relative; z-index: 1;
+            max-width: 1520px; margin: 0 auto;
+            padding: 20px 28px 60px;
+        }
+
+        /* ─── HEADER ──────────────────────── */
+        .topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 0 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 22px;
+        }
+        .topbar-brand h1 {
+            font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--text-1), var(--cyan));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .topbar-brand p { font-size: 0.78rem; color: var(--text-2); margin-top: 2px; }
+        .topbar-right { display: flex; gap: 10px; align-items: center; }
+
+        .pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 14px; border-radius: 100px;
+            font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em;
+            text-transform: uppercase;
+            border: 1px solid var(--border);
+            background: var(--bg-glass); color: var(--text-2);
+            transition: all 0.3s var(--ease);
+        }
+        .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+        .pill.live { color: var(--green); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.08); }
+        .pill.live .dot { animation: blink 1.5s infinite; }
+        .pill.demo { color: var(--purple); border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.08); }
+        .pill.off { color: var(--red); border-color: rgba(239,68,68,0.2); }
+        @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+        .btn-demo {
+            padding: 7px 18px; border-radius: 8px;
+            font-size: 0.72rem; font-weight: 700; font-family: var(--sans);
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em;
+            border: 1px solid rgba(139,92,246,0.4);
+            background: rgba(139,92,246,0.1); color: var(--purple);
+            transition: all 0.3s var(--ease);
+        }
+        .btn-demo:hover { background: rgba(139,92,246,0.2); box-shadow: 0 0 20px rgba(139,92,246,0.15); }
+        .btn-demo.active { background: var(--purple); color: #fff; }
+
+        /* ─── CARD SYSTEM ─────────────────── */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            backdrop-filter: blur(16px);
+            transition: border-color 0.3s var(--ease);
+            overflow: hidden;
+        }
+        .card:hover { border-color: var(--border-hover); }
+        .card-head {
+            padding: 14px 18px 0;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .card-label {
+            font-size: 0.68rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--text-2);
+        }
+        .card-badge {
+            font-family: var(--mono); font-size: 0.65rem;
+            color: var(--text-3);
+        }
+        .card-inner { padding: 14px 18px 18px; }
+
+        /* ─── GRID ────────────────────────── */
+        .row { display: grid; gap: 16px; margin-bottom: 16px; }
+        .row-hero { grid-template-columns: 1.8fr 1fr 1fr; }
+        .row-gauges { grid-template-columns: repeat(3, 1fr); }
+        .row-charts { grid-template-columns: 1.4fr 1fr; }
+        .row-bottom { grid-template-columns: 1fr 1fr; }
+
+        /* ═════════════════════════════════════
+           STATUS HERO — EVENT ENGINE
+           ═════════════════════════════════════ */
+        .hero {
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 28px 24px; transition: all 0.4s var(--ease);
+        }
+        .hero-eyebrow {
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; margin-bottom: 8px;
+        }
+        .hero-title {
+            font-size: 2.4rem; font-weight: 900; letter-spacing: -0.03em;
+            line-height: 1.05; margin-bottom: 6px;
+            transition: color 0.3s ease;
+        }
+        .hero-sub { font-size: 0.85rem; color: var(--text-2); line-height: 1.4; }
+
+        .hero.level-0 { border-color: rgba(16,185,129,0.25); box-shadow: inset 0 0 60px rgba(16,185,129,0.04); }
+        .hero.level-0 .hero-eyebrow { color: var(--green); }
+        .hero.level-0 .hero-title { color: var(--green); }
+
+        .hero.level-1 { border-color: rgba(245,158,11,0.25); box-shadow: inset 0 0 60px rgba(245,158,11,0.04); }
+        .hero.level-1 .hero-eyebrow { color: var(--yellow); }
+        .hero.level-1 .hero-title { color: var(--yellow); }
+
+        .hero.level-2 { border-color: rgba(249,115,22,0.3); box-shadow: inset 0 0 60px rgba(249,115,22,0.05); }
+        .hero.level-2 .hero-eyebrow { color: var(--orange); }
+        .hero.level-2 .hero-title { color: var(--orange); }
+
+        .hero.level-3 { border-color: rgba(239,68,68,0.35); box-shadow: inset 0 0 80px rgba(239,68,68,0.06); }
+        .hero.level-3 .hero-eyebrow { color: var(--red); }
+        .hero.level-3 .hero-title { color: var(--red); }
+
+        .hero.level-4 {
+            border-color: rgba(220,38,38,0.5);
+            box-shadow: inset 0 0 100px rgba(220,38,38,0.08);
+            animation: dangerPulse 1.2s ease-in-out infinite;
+        }
+        .hero.level-4 .hero-eyebrow { color: var(--crimson); }
+        .hero.level-4 .hero-title { color: var(--crimson); }
+        @keyframes dangerPulse {
+            0%,100% { box-shadow: inset 0 0 100px rgba(220,38,38,0.08); }
+            50% { box-shadow: inset 0 0 120px rgba(220,38,38,0.14), 0 0 40px rgba(220,38,38,0.1); }
+        }
+
+        /* ─── METRIC BLOCKS ───────────────── */
+        .metric-stack { display: flex; flex-direction: column; gap: 12px; }
+        .metric-block {
+            background: rgba(255,255,255,0.02); border-radius: var(--radius-sm);
+            padding: 14px 16px; border: 1px solid rgba(255,255,255,0.03);
+        }
+        .metric-val {
+            font-family: var(--mono); font-size: 1.8rem; font-weight: 700;
+            line-height: 1; transition: color 0.3s ease;
+        }
+        .metric-label {
+            font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--text-3); margin-top: 4px;
+        }
+        .metric-bar {
+            width: 100%; height: 4px; border-radius: 2px;
+            background: rgba(255,255,255,0.04); margin-top: 10px; overflow: hidden;
+        }
+        .metric-fill {
+            height: 100%; border-radius: 2px;
+            transition: width 0.5s var(--ease), background 0.3s ease;
+        }
+
+        /* ─── GAUGE CARDS ─────────────────── */
+        .gauge-inner { display: flex; flex-direction: column; align-items: center; }
+        .gauge-svg { width: 130px; height: 72px; overflow: visible; }
+        .gauge-bg-path { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 8; stroke-linecap: round; }
+        .gauge-fill-path {
+            fill: none; stroke-width: 8; stroke-linecap: round;
+            transition: stroke-dashoffset 0.6s var(--ease), stroke 0.3s ease;
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+        .gauge-reading {
+            font-family: var(--mono); font-size: 1.6rem; font-weight: 700;
+            margin-top: 8px; transition: color 0.3s ease;
+        }
+        .gauge-unit { font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+        .gauge-ppm { font-family: var(--mono); font-size: 0.75rem; color: var(--text-3); margin-top: 6px; }
+
+        /* ─── CANVAS CHARTS ───────────────── */
+        .chart-wrap { position: relative; width: 100%; height: 240px; }
+        .chart-wrap canvas { width: 100% !important; height: 100% !important; display: block; }
+        .chart-legend { display: flex; gap: 16px; margin-top: 10px; }
+        .chart-legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.68rem; color: var(--text-2); }
+        .chart-legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+        /* ─── HEATMAP ─────────────────────── */
+        .heat-wrap { position: relative; width: 100%; height: 240px; }
+        .heat-wrap canvas { width: 100% !important; height: 100% !important; display: block; }
+        .heat-labels { position: absolute; left: 6px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-around; pointer-events: none; }
+        .heat-lbl { font-size: 0.6rem; font-weight: 600; color: var(--text-2); text-transform: uppercase; }
+
+        /* ─── EVENT LOG ────────────────────── */
+        .event-log {
+            display: flex; flex-direction: column; gap: 0;
+            max-height: 260px; overflow-y: auto;
+        }
+        .event-log::-webkit-scrollbar { width: 3px; }
+        .event-log::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 2px; }
+
+        .event-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.025);
+            animation: rowFade 0.25s ease;
+        }
+        @keyframes rowFade { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+
+        .event-tag {
+            flex-shrink: 0; padding: 2px 8px; border-radius: 4px;
+            font-size: 0.58rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .event-tag.nominal { background: rgba(16,185,129,0.1); color: var(--green); }
+        .event-tag.warning { background: rgba(245,158,11,0.12); color: var(--yellow); }
+        .event-tag.danger  { background: rgba(239,68,68,0.12); color: var(--red); }
+        .event-tag.anomaly { background: rgba(236,72,153,0.12); color: var(--pink); }
+
+        .event-msg { font-size: 0.72rem; color: var(--text-2); flex: 1; }
+        .event-time { font-family: var(--mono); font-size: 0.6rem; color: var(--text-3); flex-shrink: 0; }
+
+        /* ─── PROB BARS ───────────────────── */
+        .prob-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+        .prob-name { font-size: 0.65rem; color: var(--text-2); min-width: 60px; }
+        .prob-track { flex: 1; height: 5px; background: rgba(255,255,255,0.03); border-radius: 3px; overflow: hidden; }
+        .prob-fill { height: 100%; border-radius: 3px; transition: width 0.4s var(--ease); }
+        .prob-pct { font-family: var(--mono); font-size: 0.63rem; color: var(--text-3); min-width: 36px; text-align: right; }
+
+        /* ─── EMPTY STATE ─────────────────── */
+        .empty { text-align: center; padding: 30px; color: var(--text-3); font-size: 0.8rem; }
+        .empty-icon { font-size: 1.6rem; margin-bottom: 6px; }
+
+        /* ─── RESPONSIVE ──────────────────── */
+        @media (max-width: 1100px) {
+            .row-hero { grid-template-columns: 1fr; }
+            .row-charts { grid-template-columns: 1fr; }
+            .row-bottom { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 700px) {
+            .row-gauges { grid-template-columns: 1fr; }
+            .shell { padding: 12px 14px 40px; }
+            .topbar { flex-direction: column; gap: 12px; align-items: flex-start; }
+            .hero-title { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-mesh"></div>
+    <div class="scan-line"></div>
+
+    <div class="shell">
+        <!-- ═══ TOPBAR ═══ -->
+        <header class="topbar">
+            <div class="topbar-brand">
+                <h1>SnO2 Hierarchical Gas Intelligence</h1>
+                <p>Edge-Fog-Cloud Architecture &bull; WebSocket Streaming &bull; Stacking Ensemble + Isolation Forest</p>
+            </div>
+            <div class="topbar-right">
+                <div class="pill off" id="ws-pill">
+                    <span class="dot"></span>
+                    <span id="ws-status">Connecting...</span>
+                </div>
+                <button class="btn-demo" id="demo-btn" onclick="toggleDemo()">&#9654; Start Demo</button>
+            </div>
+        </header>
+
+        <!-- ═══ ROW 1: EVENT ENGINE + RISK + ANOMALY ═══ -->
+        <div class="row row-hero">
+            <!-- EVENT ENGINE HERO -->
+            <div class="card hero level-0" id="hero-card">
+                <div class="hero-eyebrow" id="hero-eyebrow">Event Engine &mdash; Status</div>
+                <div class="hero-title" id="hero-title">AWAITING DATA</div>
+                <div class="hero-sub" id="hero-sub">Start Demo Mode or connect your ESP32 to begin real-time streaming.</div>
+            </div>
+
+            <!-- RISK SCORE -->
+            <div class="card">
+                <div class="card-head"><span class="card-label">Edge Risk Score</span></div>
+                <div class="card-inner">
+                    <div class="metric-stack">
+                        <div class="metric-block">
+                            <div class="metric-val" id="risk-score" style="color:var(--cyan)">0</div>
+                            <div class="metric-label">Composite Risk Index / 100</div>
+                            <div class="metric-bar"><div class="metric-fill" id="risk-bar" style="width:0%;background:var(--cyan)"></div></div>
+                        </div>
+                        <div class="metric-block">
+                            <div class="metric-val" id="cgi-val" style="color:var(--purple);font-size:1.4rem">0.00</div>
+                            <div class="metric-label">Combined Gas Index (CGI)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANOMALY + MODEL -->
+            <div class="card">
+                <div class="card-head"><span class="card-label">Fog Intelligence</span></div>
+                <div class="card-inner">
+                    <div class="metric-stack">
+                        <div class="metric-block">
+                            <div class="metric-val" id="anomaly-status" style="color:var(--green);font-size:1.3rem">NOMINAL</div>
+                            <div class="metric-label">Isolation Forest Anomaly</div>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                            <div class="metric-block">
+                                <div class="metric-val" id="model-acc" style="font-size:1.2rem;color:var(--cyan)">—</div>
+                                <div class="metric-label">ML Accuracy</div>
+                            </div>
+                            <div class="metric-block">
+                                <div class="metric-val" id="slope-val" style="font-size:1.2rem;color:var(--text-2)">0.000</div>
+                                <div class="metric-label">Trend Slope/s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ ROW 2: SENSOR GAUGES ═══ -->
+        <div class="row row-gauges">
+            <div class="card" id="card-mq2">
+                <div class="card-head"><span class="card-label">MQ-2 &bull; Combustible Gas</span></div>
+                <div class="card-inner gauge-inner">
+                    <svg class="gauge-svg" viewBox="0 0 130 72">
+                        <path class="gauge-bg-path" d="M 12 64 A 53 53 0 0 1 118 64"/>
+                        <path class="gauge-fill-path" id="g-fill-mq2" d="M 12 64 A 53 53 0 0 1 118 64" stroke="var(--cyan)" stroke-dasharray="167" stroke-dashoffset="167"/>
+                    </svg>
+                    <div class="gauge-reading" id="g-val-mq2" style="color:var(--cyan)">—</div>
+                    <div class="gauge-unit">Rs/R0 Ratio</div>
+                    <div class="gauge-ppm" id="g-ppm-mq2">— ppm</div>
+                </div>
+            </div>
+            <div class="card" id="card-mq135">
+                <div class="card-head"><span class="card-label">MQ-135 &bull; Air Quality</span></div>
+                <div class="card-inner gauge-inner">
+                    <svg class="gauge-svg" viewBox="0 0 130 72">
+                        <path class="gauge-bg-path" d="M 12 64 A 53 53 0 0 1 118 64"/>
+                        <path class="gauge-fill-path" id="g-fill-mq135" d="M 12 64 A 53 53 0 0 1 118 64" stroke="var(--purple)" stroke-dasharray="167" stroke-dashoffset="167"/>
+                    </svg>
+                    <div class="gauge-reading" id="g-val-mq135" style="color:var(--purple)">—</div>
+                    <div class="gauge-unit">Rs/R0 Ratio</div>
+                    <div class="gauge-ppm" id="g-ppm-mq135">— ppm</div>
+                </div>
+            </div>
+            <div class="card" id="card-mq7">
+                <div class="card-head"><span class="card-label">MQ-7 &bull; Carbon Monoxide</span></div>
+                <div class="card-inner gauge-inner">
+                    <svg class="gauge-svg" viewBox="0 0 130 72">
+                        <path class="gauge-bg-path" d="M 12 64 A 53 53 0 0 1 118 64"/>
+                        <path class="gauge-fill-path" id="g-fill-mq7" d="M 12 64 A 53 53 0 0 1 118 64" stroke="var(--blue)" stroke-dasharray="167" stroke-dashoffset="167"/>
+                    </svg>
+                    <div class="gauge-reading" id="g-val-mq7" style="color:var(--blue)">—</div>
+                    <div class="gauge-unit">Rs/R0 Ratio</div>
+                    <div class="gauge-ppm" id="g-ppm-mq7">— ppm</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ ROW 3: TIME SERIES + HEATMAP ═══ -->
+        <div class="row row-charts">
+            <div class="card">
+                <div class="card-head">
+                    <span class="card-label">Sensor Time Series + CGI Fusion</span>
+                    <span class="card-badge" id="chart-pts">0 pts</span>
+                </div>
+                <div class="card-inner">
+                    <div class="chart-wrap"><canvas id="ts-canvas"></canvas></div>
+                    <div class="chart-legend">
+                        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--cyan)"></span>MQ-2</div>
+                        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--purple)"></span>MQ-135</div>
+                        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--blue)"></span>MQ-7</div>
+                        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--pink)"></span>CGI</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <span class="card-label">Exposure Heatmap &bull; Drift Monitor</span>
+                    <span class="card-badge" id="heat-cols">0 cols</span>
+                </div>
+                <div class="card-inner">
+                    <div class="heat-wrap">
+                        <canvas id="heat-canvas"></canvas>
+                        <div class="heat-labels">
+                            <span class="heat-lbl" style="color:var(--cyan)">MQ-2</span>
+                            <span class="heat-lbl" style="color:var(--purple)">MQ-135</span>
+                            <span class="heat-lbl" style="color:var(--blue)">MQ-7</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ ROW 4: EVENT LOG + ML PROBABILITIES ═══ -->
+        <div class="row row-bottom">
+            <div class="card">
+                <div class="card-head">
+                    <span class="card-label">Live Event Stream</span>
+                    <span class="card-badge" id="event-count">0 events</span>
+                </div>
+                <div class="card-inner">
+                    <div class="event-log" id="event-log">
+                        <div class="empty"><div class="empty-icon">&#128225;</div>Waiting for WebSocket data stream...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-head"><span class="card-label">ML Classification Confidence</span></div>
+                <div class="card-inner">
+                    <div id="prob-bars">
+                        <div class="empty"><div class="empty-icon">&#129504;</div>No inference data yet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═════════════════════════════════════
+         JAVASCRIPT ENGINE
+         ═════════════════════════════════════ -->
+    <script>
+    (function() {
+        'use strict';
+
+        // ── CONFIG ──
+        const ARC_LEN = 167;
+        const MAX_PTS = 80;
+        const COLORS = {
+            mq2: '#06b6d4', mq135: '#8b5cf6', mq7: '#3b82f6', cgi: '#ec4899'
+        };
+        const LEVEL_NAMES = ['CLEAN AIR','LOW GAS TRACES','MEDIUM CONCENTRATION','HIGH GAS — WARNING','CRITICAL — EVACUATE'];
+        const LEVEL_SUBS = [
+            'All sensor readings are within normal parameters.',
+            'Minor gas traces detected — monitoring...',
+            'Moderate gas concentration — monitor closely.',
+            'High gas levels detected — take immediate action!',
+            'Dangerous concentration! Evacuate area immediately!'
+        ];
+        const PROB_COLORS = { 0:'#10b981', 1:'#f59e0b', 2:'#f97316', 3:'#ef4444', 4:'#dc2626' };
+        const PROB_LABELS = { 0:'Clean', 1:'Low', 2:'Medium', 3:'High', 4:'Critical' };
+
+        // ── STATE ──
+        let isDemo = false;
+        let eventCount = 0;
+        let tsData = { mq2:[], mq135:[], mq7:[], cgi:[], times:[], levels:[] };
+        let heatData = { mq2:[], mq135:[], mq7:[] };
+        let firstLogCleared = false;
+
+        // ── CANVAS REFS ──
+        const tsCanvas = document.getElementById('ts-canvas');
+        const tsCtx = tsCanvas.getContext('2d');
+        const heatCanvas = document.getElementById('heat-canvas');
+        const heatCtx = heatCanvas.getContext('2d');
+
+        function setupCanvases() {
+            const dpr = window.devicePixelRatio || 1;
+            [tsCanvas, heatCanvas].forEach(c => {
+                const rect = c.parentElement.getBoundingClientRect();
+                c.width = rect.width * dpr;
+                c.height = rect.height * dpr;
+                c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+            });
+            renderTimeSeries();
+            renderHeatmap();
+        }
+        window.addEventListener('resize', setupCanvases);
+        setTimeout(setupCanvases, 80);
+
+        // ═══════════════════════════════════
+        // SOCKET.IO — THE CORE
+        // ═══════════════════════════════════
+        const socket = io({ transports: ['websocket', 'polling'] });
+
+        socket.on('connect', () => {
+            setPill('live', 'WS Connected');
+            pushEvent('system', 'WebSocket connection established — ready for streaming.', '');
+            // Fetch model accuracy on connect
+            fetch('/api/latest').then(r=>r.json()).then(d => {
+                if(d.model_accuracy) document.getElementById('model-acc').textContent = (d.model_accuracy*100).toFixed(1)+'%';
+            }).catch(()=>{});
+        });
+
+        socket.on('disconnect', () => setPill('off', 'Disconnected'));
+        socket.on('connect_error', () => setPill('off', 'WS Error'));
+
+        socket.on('new_data', (d) => {
+            if(d.demo && !isDemo) {
+                isDemo = true;
+                setPill('demo', 'Demo Stream');
+                document.getElementById('demo-btn').textContent = '\u25A0 Stop Demo';
+                document.getElementById('demo-btn').classList.add('active');
+            }
+
+            updateHero(d);
+            updateGauges(d);
+            updateRisk(d);
+            updateAnomaly(d);
+            updateProbBars(d);
+            pushChartPoint(d);
+            pushHeatPoint(d);
+
+            // Event log for interesting stuff
+            if (d.is_anomaly) pushEvent('anomaly', 'Isolation Forest anomaly flagged', d.time);
+            if (d.prediction >= 3) pushEvent('danger', d.label_name + ' \u2014 Risk: ' + d.intelligence.risk_score, d.time);
+            else if (d.intelligence.event_status !== 'Nominal') pushEvent('warning', d.intelligence.event_status + ' (slope: ' + d.intelligence.slope + ')', d.time);
+        });
+
+        // ─── PILL BADGE ──
+        function setPill(mode, text) {
+            const pill = document.getElementById('ws-pill');
+            pill.className = 'pill ' + mode;
+            document.getElementById('ws-status').textContent = text;
+        }
+
+        // ═══════════════════════════════════
+        // UPDATE FUNCTIONS
+        // ═══════════════════════════════════
+
+        function updateHero(d) {
+            const lvl = d.prediction || 0;
+            const intel = d.intelligence || {};
+            const hero = document.getElementById('hero-card');
+            hero.className = 'card hero level-' + lvl;
+
+            const eventStr = intel.event_status || 'Nominal';
+            document.getElementById('hero-eyebrow').textContent = 'Event Engine \u2014 ' + eventStr;
+            document.getElementById('hero-title').textContent = LEVEL_NAMES[lvl] || 'UNKNOWN';
+            document.getElementById('hero-sub').textContent = LEVEL_SUBS[lvl] +
+                (intel.trend_prediction ? ' | Predicted CGI in 10s: ' + intel.trend_prediction : '');
+        }
+
+        function updateGauges(d) {
+            setGauge('mq2', d.mq2_ratio, d.mq2_ppm, 3, 10, COLORS.mq2);
+            setGauge('mq135', d.mq135_ratio, d.mq135_ppm, 1.5, 5, COLORS.mq135);
+            setGauge('mq7', d.mq7_ratio, d.mq7_ppm, 5, 15, COLORS.mq7);
+        }
+
+        function setGauge(id, ratio, ppm, lo, hi, baseColor) {
+            const norm = Math.max(0, Math.min(1, (ratio - lo) / (hi - lo)));
+            const offset = ARC_LEN * (1 - norm);
+            const fill = document.getElementById('g-fill-' + id);
+            const valEl = document.getElementById('g-val-' + id);
+            const ppmEl = document.getElementById('g-ppm-' + id);
+
+            fill.style.strokeDashoffset = offset;
+            valEl.textContent = ratio.toFixed(2);
+            ppmEl.textContent = (ppm || 0).toFixed(2) + ' ppm';
+
+            // Danger coloring (lower ratio = more gas)
+            let color = baseColor;
+            if (norm < 0.25) { color = '#ef4444'; }
+            else if (norm < 0.4) { color = '#f97316'; }
+            else if (norm < 0.6) { color = '#f59e0b'; }
+            fill.setAttribute('stroke', color);
+            valEl.style.color = color;
+        }
+
+        function updateRisk(d) {
+            const intel = d.intelligence || {};
+            const risk = intel.risk_score || 0;
+            const cgi = intel.cgi || 0;
+
+            document.getElementById('risk-score').textContent = risk.toFixed(0);
+            document.getElementById('cgi-val').textContent = cgi.toFixed(2);
+            document.getElementById('slope-val').textContent = (intel.slope >= 0 ? '+' : '') + (intel.slope || 0).toFixed(3);
+
+            const bar = document.getElementById('risk-bar');
+            bar.style.width = risk + '%';
+            bar.style.background = risk > 75 ? '#dc2626' : risk > 50 ? '#f97316' : risk > 30 ? '#f59e0b' : '#06b6d4';
+            document.getElementById('risk-score').style.color = bar.style.background;
+
+            // Slope coloring
+            const slopeEl = document.getElementById('slope-val');
+            const slope = intel.slope || 0;
+            slopeEl.style.color = slope > 0.3 ? '#ef4444' : slope > 0.05 ? '#f59e0b' : slope < -0.05 ? '#10b981' : 'var(--text-2)';
+        }
+
+        function updateAnomaly(d) {
+            const el = document.getElementById('anomaly-status');
+            if (d.is_anomaly) {
+                el.textContent = '\u26A0 ANOMALY';
+                el.style.color = '#ec4899';
+            } else {
+                el.textContent = 'NOMINAL';
+                el.style.color = '#10b981';
+            }
+        }
+
+        function updateProbBars(d) {
+            const probs = d.probabilities || {};
+            const container = document.getElementById('prob-bars');
+            let html = '';
+            for (let i = 0; i <= 4; i++) {
+                const p = (probs[i] || 0) * 100;
+                const isActive = d.prediction === i;
+                const color = PROB_COLORS[i];
+                html += '<div class="prob-row">' +
+                    '<span class="prob-name" style="' + (isActive ? 'color:'+color+';font-weight:700' : '') + '">' + PROB_LABELS[i] + '</span>' +
+                    '<div class="prob-track"><div class="prob-fill" style="width:' + p + '%;background:' + color +
+                    (isActive ? ';box-shadow:0 0 8px '+color : '') + '"></div></div>' +
+                    '<span class="prob-pct" style="' + (isActive ? 'color:'+color : '') + '">' + p.toFixed(1) + '%</span>' +
+                    '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // ═══════════════════════════════════
+        // TIME SERIES CHART (Canvas)
+        // ═══════════════════════════════════
+        function pushChartPoint(d) {
+            const intel = d.intelligence || {};
+            tsData.mq2.push(d.mq2_ratio);
+            tsData.mq135.push(d.mq135_ratio);
+            tsData.mq7.push(d.mq7_ratio);
+            tsData.cgi.push(intel.cgi || 0);
+            tsData.times.push(d.time || '');
+            tsData.levels.push(d.prediction || 0);
+
+            if (tsData.mq2.length > MAX_PTS) {
+                tsData.mq2.shift(); tsData.mq135.shift(); tsData.mq7.shift();
+                tsData.cgi.shift(); tsData.times.shift(); tsData.levels.shift();
+            }
+            document.getElementById('chart-pts').textContent = tsData.mq2.length + ' pts';
+            renderTimeSeries();
+        }
+
+        function renderTimeSeries() {
+            const w = tsCanvas.parentElement.clientWidth;
+            const h = tsCanvas.parentElement.clientHeight;
+            tsCtx.clearRect(0, 0, w, h);
+
+            const n = tsData.mq2.length;
+            if (n < 2) {
+                tsCtx.fillStyle = 'rgba(255,255,255,0.12)';
+                tsCtx.font = '12px Inter';
+                tsCtx.textAlign = 'center';
+                tsCtx.fillText('Waiting for stream...', w/2, h/2);
+                return;
+            }
+
+            const pad = { t:10, r:12, b:24, l:38 };
+            const pw = w - pad.l - pad.r;
+            const ph = h - pad.t - pad.b;
+
+            // Find range
+            const all = [...tsData.mq2, ...tsData.mq135, ...tsData.mq7, ...tsData.cgi];
+            let mn = Math.min(...all) * 0.92;
+            let mx = Math.max(...all) * 1.08;
+            if (mx - mn < 1) { mx += 0.5; mn -= 0.5; }
+
+            // Grid
+            tsCtx.strokeStyle = 'rgba(255,255,255,0.03)';
+            tsCtx.lineWidth = 0.5;
+            tsCtx.font = '9px JetBrains Mono';
+            tsCtx.fillStyle = 'rgba(255,255,255,0.15)';
+            tsCtx.textAlign = 'right';
+            for (let i = 0; i <= 4; i++) {
+                const y = pad.t + ph * (i/4);
+                tsCtx.beginPath(); tsCtx.moveTo(pad.l, y); tsCtx.lineTo(w-pad.r, y); tsCtx.stroke();
+                const val = mx - (mx-mn)*(i/4);
+                tsCtx.fillText(val.toFixed(1), pad.l-5, y+3);
+            }
+
+            // Danger bands
+            for (let i = 0; i < n-1; i++) {
+                if (tsData.levels[i] >= 3) {
+                    const x1 = pad.l + (i/(n-1))*pw;
+                    const x2 = pad.l + ((i+1)/(n-1))*pw;
+                    tsCtx.fillStyle = tsData.levels[i]===4 ? 'rgba(220,38,38,0.06)' : 'rgba(239,68,68,0.035)';
+                    tsCtx.fillRect(x1, pad.t, x2-x1, ph);
+                }
+            }
+
+            // Time labels
+            tsCtx.fillStyle = 'rgba(255,255,255,0.12)';
+            tsCtx.textAlign = 'center';
+            const step = Math.max(1, Math.floor(n/5));
+            for (let i = 0; i < n; i += step) {
+                const x = pad.l + (i/(n-1))*pw;
+                tsCtx.fillText(tsData.times[i], x, h-4);
+            }
+
+            // Draw lines
+            function drawLine(arr, color, lineW) {
+                tsCtx.beginPath();
+                tsCtx.strokeStyle = color;
+                tsCtx.lineWidth = lineW || 1.8;
+                tsCtx.lineJoin = 'round';
+                for (let i = 0; i < arr.length; i++) {
+                    const x = pad.l + (i/(n-1))*pw;
+                    const y = pad.t + ph*(1-(arr[i]-mn)/(mx-mn));
+                    i === 0 ? tsCtx.moveTo(x,y) : tsCtx.lineTo(x,y);
+                }
+                tsCtx.stroke();
+
+                // Gradient fill
+                const last = arr.length - 1;
+                tsCtx.lineTo(pad.l + (last/(n-1))*pw, pad.t+ph);
+                tsCtx.lineTo(pad.l, pad.t+ph);
+                tsCtx.closePath();
+                const grad = tsCtx.createLinearGradient(0, pad.t, 0, pad.t+ph);
+                grad.addColorStop(0, color + '18');
+                grad.addColorStop(1, color + '00');
+                tsCtx.fillStyle = grad;
+                tsCtx.fill();
+            }
+
+            drawLine(tsData.mq7, COLORS.mq7, 1.5);
+            drawLine(tsData.mq135, COLORS.mq135, 1.5);
+            drawLine(tsData.mq2, COLORS.mq2, 2);
+            drawLine(tsData.cgi, COLORS.cgi, 2.5);
+
+            // Endpoint dots
+            function drawDot(arr, color) {
+                if (!arr.length) return;
+                const x = pad.l + ((arr.length-1)/(n-1))*pw;
+                const y = pad.t + ph*(1-(arr[arr.length-1]-mn)/(mx-mn));
+                tsCtx.beginPath(); tsCtx.arc(x,y,3.5,0,Math.PI*2);
+                tsCtx.fillStyle = color; tsCtx.fill();
+                tsCtx.beginPath(); tsCtx.arc(x,y,7,0,Math.PI*2);
+                tsCtx.strokeStyle = color; tsCtx.lineWidth = 1; tsCtx.globalAlpha = 0.25;
+                tsCtx.stroke(); tsCtx.globalAlpha = 1;
+            }
+            drawDot(tsData.mq2, COLORS.mq2);
+            drawDot(tsData.mq135, COLORS.mq135);
+            drawDot(tsData.mq7, COLORS.mq7);
+            drawDot(tsData.cgi, COLORS.cgi);
+        }
+
+        // ═══════════════════════════════════
+        // HEATMAP (Canvas)
+        // ═══════════════════════════════════
+        function pushHeatPoint(d) {
+            heatData.mq2.push(d.mq2_ratio);
+            heatData.mq135.push(d.mq135_ratio);
+            heatData.mq7.push(d.mq7_ratio);
+            if (heatData.mq2.length > MAX_PTS) {
+                heatData.mq2.shift(); heatData.mq135.shift(); heatData.mq7.shift();
+            }
+            document.getElementById('heat-cols').textContent = heatData.mq2.length + ' cols';
+            renderHeatmap();
+        }
+
+        function renderHeatmap() {
+            const w = heatCanvas.parentElement.clientWidth;
+            const h = heatCanvas.parentElement.clientHeight;
+            heatCtx.clearRect(0, 0, w, h);
+
+            const n = heatData.mq2.length;
+            if (n < 1) return;
+
+            const cellW = Math.max(2, w / MAX_PTS);
+            const rowH = h / 3;
+            const gap = 3;
+
+            function drawRow(arr, yOff, r, g, b) {
+                // Normalize: lower ratio = more gas = hotter
+                const maxR = Math.max(15, ...arr);
+                const minR = Math.min(0.5, ...arr);
+                for (let i = 0; i < arr.length; i++) {
+                    // Invert: high ratio = safe, low ratio = danger
+                    const norm = 1 - Math.max(0, Math.min(1, (arr[i] - minR) / (maxR - minR)));
+                    const alpha = 0.15 + norm * 0.85;
+                    heatCtx.fillStyle = `rgba(${r},${g},${b},${alpha.toFixed(2)})`;
+                    heatCtx.fillRect(i * cellW, yOff, cellW - 1, rowH - gap);
+                }
+            }
+
+            drawRow(heatData.mq2,   0,           6, 182, 212);  // Cyan
+            drawRow(heatData.mq135, rowH,       139,  92, 246);  // Purple
+            drawRow(heatData.mq7,   rowH * 2,    59, 130, 246);  // Blue
+        }
+
+        // ═══════════════════════════════════
+        // EVENT LOG
+        // ═══════════════════════════════════
+        function pushEvent(type, msg, time) {
+            if (!firstLogCleared) {
+                document.getElementById('event-log').innerHTML = '';
+                firstLogCleared = true;
+            }
+            eventCount++;
+            document.getElementById('event-count').textContent = eventCount + ' events';
+
+            const tagClass = type === 'danger' ? 'danger' : type === 'anomaly' ? 'anomaly' : type === 'warning' ? 'warning' : 'nominal';
+            const tagText = type === 'danger' ? 'ALERT' : type === 'anomaly' ? 'ANOMALY' : type === 'warning' ? 'EVENT' : 'SYS';
+
+            const row = document.createElement('div');
+            row.className = 'event-row';
+            row.innerHTML =
+                '<span class="event-tag ' + tagClass + '">' + tagText + '</span>' +
+                '<span class="event-msg">' + msg + '</span>' +
+                '<span class="event-time">' + (time || new Date().toLocaleTimeString()) + '</span>';
+
+            const log = document.getElementById('event-log');
+            log.prepend(row);
+            if (log.children.length > 60) log.removeChild(log.lastChild);
+        }
+
+        // ═══════════════════════════════════
+        // DEMO TOGGLE
+        // ═══════════════════════════════════
+        window.toggleDemo = async function() {
+            const btn = document.getElementById('demo-btn');
+            if (isDemo) {
+                await fetch('/api/demo/stop', { method: 'POST' });
+                isDemo = false;
+                btn.textContent = '\u25B6 Start Demo';
+                btn.classList.remove('active');
+                setPill('live', 'WS Connected');
+                pushEvent('system', 'Demo stream stopped.', '');
+            } else {
+                await fetch('/api/demo/start', { method: 'POST' });
+                pushEvent('system', 'Demo stream starting...', '');
+            }
+        };
+
+        // Check if demo was already running
+        fetch('/api/demo/status').then(r=>r.json()).then(d => {
+            if (d.demo_active) {
+                isDemo = true;
+                setPill('demo', 'Demo Stream');
+                document.getElementById('demo-btn').textContent = '\u25A0 Stop Demo';
+                document.getElementById('demo-btn').classList.add('active');
+            }
+        }).catch(()=>{});
+
+    })();
+    </script>
+</body>
+</html>
