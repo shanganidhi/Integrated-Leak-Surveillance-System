@@ -9,7 +9,7 @@ const char* password = "123456789";
 // ================= CLOUD DASHBOARD =================
 // Set this to the IP of the machine running app.py
 // Find it via: python -c "import socket; print(socket.gethostbyname(socket.gethostname()))"
-const char* CLOUD_SERVER = "http://192.168.1.5:5000/log";
+const char* CLOUD_SERVER = "http://10.17.175.188:5000/log";
 bool cloudEnabled = true;
 
 // ================= PINS =================

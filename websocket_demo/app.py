@@ -20,10 +20,14 @@ from collections import deque
 
 import numpy as np
 import joblib
+import warnings
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 from scipy.stats import linregress
+
+# Suppress annoying sklearn warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 # ═══════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -342,11 +346,11 @@ def log_data():
             alert_log.append({
                 "timestamp": now.isoformat(),
                 "level": "CRITICAL" if prediction == 4 else "WARNING",
-                "message": f"{label_map[prediction]} — MQ-2: {mq2_ratio:.2f}",
+                "message": f"{label_map[prediction]} - MQ-2: {mq2_ratio:.2f}",
                 "prediction": prediction
             })
         
-        print(f"[{reading['time']}] R2:{mq2_ratio:.2f} R135:{mq135_ratio:.2f} R7:{mq7_ratio:.2f} → {label_map[prediction]}")
+        print(f"[{reading['time']}] R2:{mq2_ratio:.2f} R135:{mq135_ratio:.2f} R7:{mq7_ratio:.2f} -> {label_map[prediction]}")
         
         return jsonify({
             "status": "success",
@@ -356,7 +360,9 @@ def log_data():
         }), 200
         
     except Exception as e:
-        print(f"Error: {e}")
+        import traceback
+        print(f"!!! SERVER ERROR: {e}")
+        traceback.print_exc()
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/latest')
